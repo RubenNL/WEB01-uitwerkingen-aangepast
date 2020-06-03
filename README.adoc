@@ -31,20 +31,11 @@ Deze directory bevat bestanden die in deze readme gebruikt worden.
 =====
 
 [%collapsible]
-.cypress 
-=====
-Bestanden ten behoeve van cypress tests
-
-WARNING: Deze versie bevat helaas (nog) geen cypress tests.
-
-=====
-
-[%collapsible]
 .node_modules
 =====
 Project directory waar Node de voor het project geinstalleerde modules bewaard.
 
-NOTE: Het server gedeelte van dit project als ook Cypress maken gebruik van Node.js. Vandaar dat er een node_modules directory aanwezig is. Node.js (server side JavaScript) valt echter buiten de scope van dit vak.
+NOTE: Het server gedeelte van dit project maakt gebruik van Node.js. Vandaar dat er een node_modules directory aanwezig is. Node.js (server side JavaScript) valt echter buiten de scope van dit vak.
 
 =====
 
@@ -67,15 +58,6 @@ NOTE: Voor dit project hebben we ervoor gekozen om de publieke bestanden in de m
 =====
 Hier vinden we een simpele node express server. Deze is echter niet voor productie bedoeld, maar voor het locaal testen van onze front end is die prima.
 Je kunt deze server starten door in de root directory van dit project het commando `npm start` uit te voeren. 
-=====
-
-[%collapsible]
-.test 
-=====
-Mocha/Chai test bestanden om de JavaScript code te testen.
-
-WARNING: Ook deze test is helaas (nog) niet aanwezig.
-
 =====
 
 ==== De architectuur
