@@ -32,19 +32,17 @@ export class TodoService {
         // });
 
         return fetch('/v1/todos')
-        .then (response => response.json())
-        .then (response => {
-            this.items = new Map();
-            const list = response.map(item => {
-                const key = item[0];
-                const value = item[1];
-                let todo = new TodoItem();
-                todo = Object.assign(todo, value);
-                this.items.set(key, todo); 
+            .then (response => response.json())
+            .then (response => {
+                this.items.clear();
+                response.forEach(item => {
+                    let todo=new TodoItem();
+                    Object.assign(todo,item[1]);
+                    this.items.set(item[0], todo);
+                });
+                return this.items;
             });
-            return this.items;
-        });
-    }
+        }
 
     /**
      * This function promises to add the given item to the collection of items.
@@ -126,8 +124,11 @@ export class TodoService {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             }
+        }).then (response => response.json())
+        .then (response => {
+            if(response===true) this.items.delete(key);
+            return response;
         })
-        .then (response => response.json());
     }
 
     /**
@@ -145,7 +146,11 @@ export class TodoService {
                 'Content-Type': 'application/json;charset=utf-8'
             }
         })
-        .then (response => response.json());
+        .then (response => response.json())
+        .then (response => {
+            if(response===true) this.items.clear();
+            return response;
+        })
     }
 
 }
