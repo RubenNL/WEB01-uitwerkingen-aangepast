@@ -1,0 +1,21 @@
+{
+  "name": "hu-fep1-web01",
+  "version": "1.0.0",
+  "description": "= FEP WEB01 - HTML, CSS & JS :icons: font  ifdef::env-github[] :tip-caption: :bulb: :note-caption: :information_source: :important-caption: :heavy_exclamation_mark: :caution-caption: :fire: :warning-caption: :warning: endif::[]",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server/todo-server.js",
+    "test": "cypress open"
+  },
+  "author": "HU",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^3.8.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

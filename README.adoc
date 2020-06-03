@@ -1,0 +1,192 @@
+= FEP WEB01 - HTML, CSS & JS
+:icons: font 
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+image::./assets/JavaScript-logo.png[JS logo, 100]
+
+== Simpele TODO site
+
+Nu dat er kennis omtrent de drie basis onderdelen van een webpagina bekend is (JavaScript, HTML en CSS), zullen we deze drie onderdelen in deze oefening gaan combineren.
+Belangrijke nieuwe leerdoelen die in deze opdracht aan de orde zullen komen, zijn:
+
+* DOM manipulatie
+* MV* architectuur
+
+=== Opbouw van de gegeven code
+Voordat je aan de assignments begint is het verstandig om even een klein beetje over de opbouw van het gegeven project te weten.
+
+==== De directories
+De gegeven code kent meerdere subdirectories (click op de directorynaam voor meer info):
+
+[%collapsible]
+.assests 
+=====
+Deze directory bevat bestanden die in deze readme gebruikt worden.
+=====
+
+[%collapsible]
+.cypress 
+=====
+Bestanden ten behoeve van cypress tests
+
+WARNING: Deze versie bevat helaas (nog) geen cypress tests.
+
+=====
+
+[%collapsible]
+.node_modules
+=====
+Project directory waar Node de voor het project geinstalleerde modules bewaard.
+
+NOTE: Het server gedeelte van dit project als ook Cypress maken gebruik van Node.js. Vandaar dat er een node_modules directory aanwezig is. Node.js (server side JavaScript) valt echter buiten de scope van dit vak.
+
+=====
+
+[%collapsible]
+.public
+=====
+Deze directory bevat de bestanden die door de web server public aangeboden worden. Dit zijn dus o.a. de HTML/CSS en JS bestanden.
+Dit is dus de directory waarin we gaan werken.
+
+WARNING: Front-end en back-end bestanden horen altijd te worden gescheiden. Dit omdat in principe via de webserver alle bestanden en directories die de publieke bestanden bevatten via het web op te vragen zijn, ook al heb je via de html geen link naar die bestanden gelegd. En uit veiligheidsredenen wil je voorkomen dat iemand een bestand van de backend via het web zou kunnen openen en lezen, want in zulke bestanden zou wellicht ook een aantal usernames en wachtwoorden te vinden kunnen zijn, zoals bijvoorbeeld username en wachtwoord om via de backend de database te kunnen benaderen.
+
+NOTE: In dit vak maken we geen gebruik van tools zoals webpack. Onze bestanden zijn dus niet geoptimaliseerd voor een efficientere hosting.
+
+NOTE: Voor dit project hebben we ervoor gekozen om de publieke bestanden in de map `public` te bewaren. Voor andere projecten zou dat ook een andere directory kunnen zijn. Zo is bij Java EE web applicaties dit meestal de directory `src/main/webapp/resources/` .
+
+=====
+
+[%collapsible]
+.server 
+=====
+Hier vinden we een simpele node express server. Deze is echter niet voor productie bedoeld, maar voor het locaal testen van onze front end is die prima.
+Je kunt deze server starten door in de root directory van dit project het commando `npm start` uit te voeren. 
+=====
+
+[%collapsible]
+.test 
+=====
+Mocha/Chai test bestanden om de JavaScript code te testen.
+
+WARNING: Ook deze test is helaas (nog) niet aanwezig.
+
+=====
+
+==== De architectuur
+
+NOTE: Het kunnen toepassen van de hier beschreven architectuur is **tentamenstof**.
+
+**MVC, MVVM, MVP, MV* **
+
+Front end code is de laatste jaren erg complex geworden, en om het overzicht te kunnen behouden zijn patterns ontstaan die zouden moeten helpen om de complexiteit door een zogenaamd **separation of concerns** te verminderen. Het meest bekende pattern is het **MVC** (Model - View - Controller) pattern. Hier onderscheiden we drie stukken code (klassen) die elk hun eigen taken en verantwoordelijkheid hebben (vandaar __separation of concern__). Zo is de **View** verantwoordelijk voor de User Interface zelf. Acties binnen de view, zoals het klikken op een knop, worden afgehandeld door de **Controller**. De controller wordt door de view aangeroepen, dus de controller leest zelf niet uit wat er in bijvoorbeeld een input veld is ingevuld. Dat is taak van de View die deze info als parameter mee geeft bij de aanroep van een methode van de controller. De methoden van de controller verwerken de ontvangen informatie door methoden van het **model** aan te roepen die vervolgens de waarde van zijn attributen bijwerkt. Nieuwe informatie omtrent de attribuutwaarden van **model** klassen worden door de **controller** teruggegeven aan de **view** die deze informatie vervolgens weergeeft.
+
+Dit MVC model was jarenlang leading. Maar doordat het web zich verder heeft ontwikkeld en komst van grotere web-frameworks zoals bijvoorbeeld Angular en VUE, waar de front end ineens zelf ook heel veel code bevatte, ontstonden er ook nieuwe patronen zoals bijvoorbeeld het **MVVM** (Model View Viewmodel), **MVP** (Model View Presenter) en variaties erop **MV* ** (Model View Whatever).
+
+De hier gegeven client code zou gezien kunnen worden als code die aan het MV* model voldoet, en komt sterk overeen met een architectuur zoals die ook bij Angular wordt gehanteerd.
+
+**Gegeven architectuur**
+
+De gegeven architectuur van dit project is de architectuur zoals we die in toekomstige front-end projecten van jullie terug willen zien. Hierbij onderscheiden we onze code in model, view en service code.
+
+De directory `model` bevat de Business Model Klassen. En hun taak is het om via hun methoden de *business logic* te beheren. De model klassen weten niks over hoe hun data wordt weergegeven en ook weten ze niet dat er een server is die hun data bewaard. Het zijn in principe gewoon simpele domein objecten.
+
+De directory `view` bevat in elk geval de html en css bestanden. Ze bepalen immers de weergave / de view.
+Daarnaast zit er ook in ons geval ook nog per html pagina een javascript bestand in deze directory, welk verantwoordelijk is controle over de view, oftewel de *presentatie logica*. +
+In FEP2 zullen we de verantwoordelijkeheid binnen deze map verder verfijnen, maar voor nu geldt dat de map een JavaScript bestand per pagina bevat die de DOM, en dus de View, mag manipuleren/aanpassen (**DOM manipulatie**). Verder is het dit JavaScript verantwoordelijk voor het afvangen van Events die door de gebruiker getriggeerd worden, zoals bijvoorbeeld click-events.
+De JavaScript bestanden in deze map zijn zelf geen JavaScript klassen maar ze kennen wel de `model` klassen die ze representeren, en weten ook welke attributen deze bevatten. Maar het opvragen en / of wijzigen van een instancie van een model klasse gebeurt uitsluitend via de gerelateerde `service` klassen.
+
+De `service` directory bevat de service klassen. Voor elke klasse uit het model is er een service klasse. De service klasse is verantwoordelijke voor de *applicatie logica*.
+De service klasse is de plek waar de verzameling van instanties van de model klasse in de front end wordt bij gehouden, en die verzoeken van de controller klasse afhandelt; dat is de service die deze klassen aanbieden.
+En omdat de service klasse tussen de view/controller en het model geplaatst is, kan de service klasse bepalen of hij voor de vervulling van het verzoek van de view/controller met een server zou moeten communiceren (om zo bijvoorbeeld een instantie in de database van de webapplicatie op te laten slaan).
+Dit maakt dat in principe **alle** methoden van de service klasse asynchroon / promises behoren te zijn. 
+
+==== De Node Express Server
+Deze opdracht zal op een gegeven moment ook gebruik gaan maken van een back end. De server van deze back-end is geschreven in Node.js en maakt gebruik van Express. Express is een Node.js library ten behoeve van een minimalistisch web framework.
+Node.js zelf is server side JavaScript. Dit maakt dat jullie inmiddels de code van deze server zouden moeten kunnen lezen. Omdat de focus van dit vak echter op de Front End ligt is er niet veel tijd in deze code gestopt, en is de code zelf in principe voor jullie niet zo interessant.
+
+Wat wel belangrijk kan zijn is de variabele `port`. Mocht de webserver niet starten omdat de port op jou computer al in gebruik is, dan moet je deze waarde dus aanpassen.
+
+Verder maakt de server in de regels 10 t/m 15 een default TodoItem aan. Nadat je alle assignments hebt afgerond en je over een werkende site beschikt, zou je deze regels kunnen verwijderen.
+
+Wat voor je op een gegeven moment belangrijk zal zijn is de REST Api die door de server gegeven wordt. Deze is als volgt:
+
+.Table REST API
+|===
+| GET | /v1/todos | Gets an array of all TodoItems.
+| DELETE | /v1/todos | Removes all TodoItems and returns true.
+
+| POST | /v1/todos | Adds the TodoItem found in the body and returns a key.
+| GET | /v1/todos/:{key} | Gets the TodoItem for a given key.
+| PUT | /v1/todos/:{key} | Updates the TodoItem for a given key with the item instance of the body. And returns true.
+| DELETE | /v1/todos/:{key} | Removes the TodoItem for a given key and returns a boolean succes value.
+|===
+
+
+==== De startpagina
+Deze assignment maakt gebruik van een index.html waarin slechts een enkele link zit die de gebruiker doorstuurt naar de eigenlijke site.
+
+Dit lijkt niet netjes, want een gebruiker zou meteen de eigenlijke site verwachten.
+Op het moment dat we met Web Components (onderdeel van het vak FEP2) aan de slag gaan wordt wellicht duidelijk waarom we voor deze opzet gekozen hebben.
+Een tijdelijke workaround is het plaatsen van een META tag, die de gebruiker meteen redirect naar de eigenlijke site.
+
+
+
+=== Assignments
+
+WARNING: De opdrachten 1 t/m 15 hebben alleen betrekking op de **view**. Pas vanaf opdracht 15 is het nodig dat je code ook de methoden van de **service** erbij betrekt / aan te passen.
+
+. [HTML] Plaats de juiste meta tag in `index.html`, zodat een bezoeker automatisch wordt doorgelinkt naar de `todo.html` pagina, in plaats van dat de gebruiker de link moet klikken. 
+link:https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections[lees: MDN Redirections in HTTP]
+
+. [WEB] In `todo.mjs` vind je een functie `addHeaderAndSubtitle`. Geef hier de DOM manipulatie code die maakt dat er via JavaScript een HTML header wordt toegevoegd. Maak hierbij **GEEN** gebruik van `innerhtml`. Dit omdat innerhtml enerzijds langzaam is en anderzijds deze functie de browser het vaak lastiger maakt om de zo gemanipuleerde pagina opnieuw te renderen.
+link:https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents[lees: MDN Maniplulating documents]
+
+. [HTML] Breid de html code van de `todo.html` pagina zodanig uit dat deze met de WAVE tool (welke je in de HTML lessen bent tegen gekomen) geen errors & alerts meer bevat.
+
+. [HTML] Encapsuleer het gegeven **`li`** element in een **`template`** element en verplaats deze template naar net achter de sluiting tag van het **`ul`** element. Deze wijziging zijn we nodig voor de volgende opdrachten.
+
+. [WEB] Voeg een clicklistener toe die de functie `addTaskHandler` uit `todo.mjs` opstart zodra er op de "add task" button wordt geklikt.
+link:https://developer.mozilla.org/en-US/docs/Web/API/EventListener[lees: MDN EventListener]
+
+. [WEB] Maak dat de `addTaskHandler` functie (zie `todo.mjs`) de input box uitleest en vervolgens de input box weer leeg maakt (
+link:https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input[lees: MDN The Input] en omdat we hier met een input van het `type text` te maken hebben kun je binnen dit artikel doorklikken naar link:https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/text[MDN: Input type="text"]).
+
+. [WEB] Indien de input box voor de nieuwe task niet leeg is, roep vanuit de `addTaskHandler` de `addTodoItemElement` functie aan zorg ervoor dat die functie de inhoud van de HTML `template` **cloned** en deze clone in de HTML aan het einde van de list (dus binnen de `ul`) toevoegt. (
+    zie: link:https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template[MDN The Content Template]
+    en: link:https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment[MDN createDocumentFragment]
+    )
+
+. [WEB] Pas nu de `addTodoItemElement` functie zodanig aan dat de geclonde template eerst inhoudelijk wordt bijgewerkt met de nieuwe task (zie opdracht 6), voordat de clone aan de HTML wordt toegevoegd. (zie nogmaals: link:https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents[lees: MDN Maniplulating documents])
+
+. [WEB] Tot nu toe wordt er alleen een Todo item toegevoegd als je op de "add task" button klikt. Een gebruiker zou echter verwachten dat het drukken van de `enter`-toets binnen het invul veld hetzelfde effect zou moeten hebben. Voeg derhalve nu in `todo.mjs` een nieuwe listener toe die als er in de input box op enter gedrukt wordt (het is dus een keyboard event) ook het item toevoegt. (less: link:https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent[MDN KeyboardEvent] maar met name, speciaal voor deze opdracht link:https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event[MDN Keydown event]).
+
+. [WEB] Het is onze bedoeling dat een gebruiker door het markeren van een todo item, aan kan geven dat het betreffende item is afgehandeld. We willen hiervoor de checkbox die aan het item voorafgaat gebruiken, die ervoor moet zorgen dat het todo item visueel anders eruit komt te zien dan de items die nog niet af zijn. 
+Voeg een ClickListener toe die bij het selecteren van een checkbox de css klasse `todoitem__text--done` aan de text toevoegt resp weer verwijderd. (en wederom vind je de hiervoor benodigde kennis in: link:https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents[lees: MDN Maniplulating documents]). 
+
+NOTE: Let bij deze opdracht goed erop waar je de listener plaatst! 
+
+[start=11]
+. [CSS] Pas de CSS aan zodat de todoitem__text--done de text doorstreept in plaats van de kleur te wijzigen (zie link:https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration[CSS Text decoration]).
+
+. [WEB] Behalve een listener voor de checkbox willen we nu ook een clickListener voor de verwijder button ('X') toevoegen.
+
+. [WEB] Maak dat de Clear button alleen maar enabled is als er ToDo items zijn.
+
+. [WEB] ClickListener toevoegen die met de Clear button alle items verwijderd, nadat eerst een modale dialoogbox getoond wordt die de gebruiker vraagt of die zeker is of de actie will cancelen (zie: link:https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog[MDN The Dialog Element])
+
+NOTE: Check dat je nog wel in staat bent om nieuwe items aan te maken.
+
+[start=15]
+. [JS] Bekijk de methoden die je de service klasse bied. Pas de functies die door de clickListeners worden getriggered nu zodanig aan, dat deze de wijzigingen doorgeven aan de service klasse.
+
+. [WEB] In opdracht 3 hebben we de pagina met behulp van de WAVE tool op zijn toegankelijkheid getoetst. Echter was de pagina toen nog niet echt dynamisch. De WAVE tool heeft dus alleen de aanwezige DOM elementen kunnen toetsen. Controlleer dat na het toevoegen van meer dan 1 element je pagina nog steeds geen fouten in de WAVE test toont. Indien er nu wel fouten getoond worden analyseer wat maakt dat er nu wel fouten zijn en ervoor niet, en pas je code aan zodat ook bij gebruik van je pagina deze toegankelijk blijft.
+
+. [JS] Pas de methoden van de `todo-service.mjs` nu zodanig aan, dat deze met de server communiceert en zo de wijzigingen door de server worden bijgehouden. 
+
+. [JS] Maak dat als je als gebruiker een wijziging in je todo items aanbrengt deze op een andere bowser ook worden weergegeven zonder dat je daar handmatig een refresh triggerd. Een simpele manier om dit te bereiken is door gebruik te maken van een timer (zie setInterval / setTimeout). Strikt genomen zou een zulke timer een onderdeel van de applicatie logica zijn en dus in de service geplaatst moeten worden, maar voor nu doen we dat even niet en laten we de code hiervoor onderdeel van de controller uitmaken. (zie link:https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout[MDN setTimeout], link:https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval[MDN setInterval], link:https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/clearTimeout[MDN clearTimeout] and link:https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/clearInterval[MDN clearInterval])

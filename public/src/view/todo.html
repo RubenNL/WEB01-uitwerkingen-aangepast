@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>FEP1 - WEB01 - Oefening</title>
+    <link href="todo.css" rel="stylesheet">
+    <script type="module" src="./todo.mjs"></script>
+</head>
+
+<body>
+    <header>
+        <!--
+            Add a h1 title using JavaScript followed by a paragraph with a subtitle
+        -->
+    </header>
+    
+    <main>
+        <div class="new-task">
+            <label for="new-task">Task:</label>
+            <input id="new-task" type="text" class="new-task__input">
+            <button class="btn new-task__addbtn">add task</button>
+        </div>
+        <button class="btn clear-btn" disabled>clear</button>
+        <button class="btn refresh-btn">refresh</button>
+        <ul class="todo-list"></ul>
+        <template id="todo-item-template">
+            <li class="todo-item">
+                <input id="checkbox" type="checkbox" role="checkbox" class="todo-item__checkbox">
+                <label class="todo-item__task" for="checkbox">Maak alle oefeningen</label>
+                <button class="btn todo-item__remove-btn">X</button>
+            </li>
+        </template>
+        <dialog class="dialog">
+            <p>Are you sure?</p>
+            <button class="btn dialog__yesbtn">Yes</button>
+            <button class="btn dialog__nobtn">Cancel</button>
+        </dialog>
+    </main>
+
+    <footer>
+        <p>
+            FEP1 - WEB01 - Oefening
+        </p>
+    </footer>
+</body>
+</html>
